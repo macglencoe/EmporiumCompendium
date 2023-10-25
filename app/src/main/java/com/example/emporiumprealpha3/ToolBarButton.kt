@@ -30,10 +30,13 @@ fun ToolBarButton(
     IconButton(
         onClick = { onClick() } // Toggle
     ) {
-        Icon(
-            painter = painterResource(id = option.iconResource), // Set icon from option
-            contentDescription = option.contentDescription, // Set content description from option
-            tint = iconColor,
-            modifier = Modifier.size(48.dp))
+        if (option.iconResource != null) {
+            Icon(
+                painter = painterResource(id = option.iconResource), // Set icon from option
+                contentDescription = option.contentDescription, // Set content description from option
+                tint = iconColor,
+                modifier = Modifier.size(48.dp)
+            )
+        }
     }
 }

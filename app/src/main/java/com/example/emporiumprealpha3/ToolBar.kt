@@ -3,6 +3,8 @@ package com.example.emporiumprealpha3
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,7 +22,9 @@ fun ToolBar(
     title: String,
     option1: ToolBarButtonOption, option1OnClick: () -> Unit, option1State: Boolean,
     option2: ToolBarButtonOption, option2OnClick: () -> Unit, option2State: Boolean,
-    modifier: Modifier,
+    modifier: Modifier = Modifier
+        .fillMaxWidth()
+        .requiredHeight(height = 60.dp),
 ) {
     Row(
         horizontalArrangement = Arrangement.Center,
