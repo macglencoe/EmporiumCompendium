@@ -67,10 +67,12 @@ class MainActivity : ComponentActivity() {
 sealed class Screen(val route: String, @StringRes val resourceId: Int, val icon: ImageVector) {
     object Splash : Screen("splashPage", R.string.splash, Icons.Filled.Info)
     object Catalogue : Screen("CigarCatalogue", R.string.catalogue, Icons.Filled.List)
+    object Profile : Screen("CigarProfile", R.string.profile, Icons.Filled.Info)
 }
 val items = listOf(
     Screen.Splash,
     Screen.Catalogue,
+    Screen.Profile
 )
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -119,6 +121,11 @@ private fun NavigationPage(modifier: Modifier = Modifier) {
         NavHost(navController = navController, startDestination = "splashPage") {
             composable("splashPage") { splashPage(navController) }
             composable("CigarCatalogue") { CigarCatalogue(scope = scope, drawerState = drawerState) }
+            composable("CigarProfile") { CigarProfile(
+                scope = scope,
+                drawerState = drawerState,
+                navController = navController
+            ) }
         }
     }
 }

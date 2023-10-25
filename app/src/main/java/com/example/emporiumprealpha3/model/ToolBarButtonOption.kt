@@ -15,5 +15,8 @@ enum class ToolBarButtonOption(
     ),
     NONE(
         "", null
+    ),
+    BACK(
+        "Back", R.drawable.arrow_back_black_24dp
     )
 }
