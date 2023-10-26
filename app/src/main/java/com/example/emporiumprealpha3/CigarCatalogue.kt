@@ -3,11 +3,18 @@ package com.example.emporiumprealpha3
 import android.content.res.Configuration
 import android.util.DisplayMetrics
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -25,12 +32,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.emporiumprealpha3.model.ToolBarButtonOption
@@ -61,90 +74,127 @@ fun CigarCatalogue(
     val screenWidth = DisplayMetrics().widthPixels.toFloat()
 
 
+    val gradientEnd: Float by animateFloatAsState(
+        if (showFilterPanel) 1000f else 300f,
+        label = "gradientMove",
+        animationSpec = spring(stiffness = Spring.StiffnessLow)
+    )
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .fillMaxWidth()
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
             .background(
                 brush = Brush.linearGradient(
                     0.2f to MaterialTheme.colorScheme.surface,
                     1f to MaterialTheme.colorScheme.background,
                     start = Offset(
-                        180f, 0f),
+                        180f, 0f
+                    ),
                     end = Offset(
-                        180f, 300f)
+                        180f, gradientEnd
+                    )
                 )
             )
     ) {
-        ToolBar(
-            "CIGARS",
-            ToolBarButtonOption.MENU, {
-                drawerScope?.launch { // Launch scope coroutine *if scope is not null*
-                    drawerState?.apply { // Apply *if drawerState is not null*
-                        if (isClosed) open() else close() // Toggle drawer
-                    }
-                }
-            }, false,
-            ToolBarButtonOption.FILTER, {
-                showFilterPanel = !showFilterPanel
-            }, showFilterPanel
+        val ksmanPosition: Dp by animateDpAsState(
+            if (showFilterPanel) 10.dp else -25.dp,
+            label = "ksmanMove",
+            animationSpec = spring(stiffness = Spring.StiffnessLow)
         )
-
-        AnimatedVisibility(showFilterPanel) {
-            FilterPanel(
-                brandSearchChanged = {brandSearch = it}, brandSearch,
-                titleSearchChanged = {titleSearch = it}, titleSearch,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    //.requiredHeight(height = 246.dp)
-                    .wrapContentHeight(unbounded = true)
-                    .padding(all = 10.dp)
-            )
-        }
-        Column( // Content
-            verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
-            horizontalAlignment = Alignment.CenterHorizontally,
+        val ksmanBlur: Dp by animateDpAsState(
+            if (showFilterPanel) 25.dp else 0.dp,
+            label = "ksmanBlur",
+            animationSpec = spring(stiffness = Spring.StiffnessLow)
+        )
+        Image(
+            painter = painterResource(id = R.drawable.ksmantransparentbw),
+            contentDescription = "Background Image",
+            contentScale = ContentScale.Fit,
+            alignment = Alignment.TopCenter,
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surface, BlendMode.Modulate),
             modifier = Modifier
                 .fillMaxSize()
-                .padding(all = 10.dp)
-                .verticalScroll(rememberScrollState())
+                .blur(ksmanBlur)
+                .offset(0.dp, ksmanPosition)
         )
-        {
-            // Filter Cigars and Display
-            DemoData.Cigars.filter {
-                it.title.contains(titleSearch, true) && it.brand.title.contains(brandSearch, true)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier
+                .fillMaxWidth()
+
+        ) {
+            ToolBar(
+                "CIGARS",
+                ToolBarButtonOption.MENU, {
+                    drawerScope?.launch { // Launch scope coroutine *if scope is not null*
+                        drawerState?.apply { // Apply *if drawerState is not null*
+                            if (isClosed) open() else close() // Toggle drawer
+                        }
+                    }
+                }, false,
+                ToolBarButtonOption.FILTER, {
+                    showFilterPanel = !showFilterPanel
+                }, showFilterPanel
+            )
+
+            AnimatedVisibility(showFilterPanel) {
+                FilterPanel(
+                    brandSearchChanged = { brandSearch = it }, brandSearch,
+                    titleSearchChanged = { titleSearch = it }, titleSearch,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        //.requiredHeight(height = 246.dp)
+                        .wrapContentHeight(unbounded = true)
+                        .padding(all = 10.dp)
+                )
             }
-                .forEach{ cigar ->
-                    var componentWidth by remember { mutableStateOf(0f) }
-                    var componentHeight by remember { mutableStateOf(0f) }
-                    val density = LocalDensity.current
-                    CigarCard(
-                        cigar,
-                        {navController?.navigate("CigarProfile/"+cigar.id)},
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .requiredHeight(height = 79.dp)
-                            .clip(shape = RoundedCornerShape(15.dp))
-                            .onGloballyPositioned {
-                                componentWidth = with(density) {
-                                    it.size.width.toFloat()
-                                }
-                                componentHeight = with(density) {
-                                    it.size.height.toFloat()
-                                }
-                            }
-                            .background(
-                                brush = Brush.linearGradient(
-                                    0.1f to MaterialTheme.colorScheme.primary.copy(alpha = 0f),
-                                    0.5f to MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
-                                    1f to MaterialTheme.colorScheme.surface,
-                                    start = Offset(componentWidth, 0f),
-                                    end = Offset(0f, componentHeight)
-                                )
-                            )
+            Column( // Content
+                verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(all = 10.dp)
+                    .verticalScroll(rememberScrollState())
+            )
+            {
+                // Filter Cigars and Display
+                DemoData.Cigars.filter {
+                    it.title.contains(titleSearch, true) && it.brand.title.contains(
+                        brandSearch,
+                        true
                     )
                 }
+                    .forEach { cigar ->
+                        var componentWidth by remember { mutableStateOf(0f) }
+                        var componentHeight by remember { mutableStateOf(0f) }
+                        val density = LocalDensity.current
+                        CigarCard(
+                            cigar,
+                            { navController?.navigate("CigarProfile/" + cigar.id) },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .requiredHeight(height = 79.dp)
+                                .clip(shape = RoundedCornerShape(15.dp))
+                                .onGloballyPositioned {
+                                    componentWidth = with(density) {
+                                        it.size.width.toFloat()
+                                    }
+                                    componentHeight = with(density) {
+                                        it.size.height.toFloat()
+                                    }
+                                }
+                                .background(
+                                    brush = Brush.linearGradient(
+                                        0.1f to MaterialTheme.colorScheme.primary.copy(alpha = 0f),
+                                        0.5f to MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
+                                        0.9f to MaterialTheme.colorScheme.surface,
+                                        start = Offset(componentWidth, 0f),
+                                        end = Offset(0f, componentHeight)
+                                    )
+                                )
+                        )
+                    }
+            }
         }
     }
 }

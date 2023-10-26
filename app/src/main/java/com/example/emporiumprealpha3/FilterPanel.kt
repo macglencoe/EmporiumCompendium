@@ -1,6 +1,7 @@
 package com.example.emporiumprealpha3
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -22,16 +23,22 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -236,14 +243,14 @@ fun FilterPanel(
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.search_24px),
-                            contentDescription = "Search Brands",
+                            contentDescription = "Search Cigars",
                             tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
                     SimpleTextField(
                         value = titleSearch,
                         onValueChange = titleSearchChanged,
-                        placeholderText = "Search Brands...",
+                        placeholderText = "Search Cigars...",
                         textStyle = TextStyle.Default.copy(
                             fontSize = 12.sp,
                             color = MaterialTheme.colorScheme.onPrimaryContainer

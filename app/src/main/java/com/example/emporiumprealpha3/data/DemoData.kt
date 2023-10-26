@@ -31,37 +31,37 @@ data class DemoData(val test: Int) {
             ),
             Cigar(
                 id = "2", title = "Arturo Fuente Cuban Corona",
-                price = 17.0, length = 5.0, strength = "Medium",
+                price = 17.0, length = 5.25, ringGauge = 45.0, strength = "Medium",
                 brand = Brands[2]
             ),
             Cigar(
                 id = "3", title = "Romeo y Julieta Reserva Real Twisted Toro",
-                price = 8.0, length = 6.0, strength = "Medium",
+                price = 8.0, length = 6.0, ringGauge = 54.0, strength = "Medium",
                 brand = Brands[4]
             ),
             Cigar(
                 id = "4", title = "ACID Blue Kuba Kuba",
-                price = 10.0, length = 5.0, strength = "Medium",
+                price = 10.0, length = 5.0, ringGauge = 54.0, strength = "Medium",
                 brand = Brands[5]
             ),
             Cigar(
                 id = "5", title = "Baccarat Nicaragua Churchill",
-                price = 6.0, length = 7.0, strength = "Medium",
+                price = 6.0, length = 7.0, ringGauge = 50.0, strength = "Medium",
                 brand = Brands[6]
             ),
             Cigar(
                 id = "6", title = "CAO Brazilia Amazon",
-                price = 6.0, length = 6.0, strength = "Full",
+                price = 6.0, length = 6.0, ringGauge = 60.0, strength = "Full",
                 brand = Brands[7]
             ),
             Cigar(
                 id = "7", title = "Oliva Serie G Presidente",
-                price = 7.0, length = 8.0, strength = "Medium",
+                price = 7.0, length = 8.0, ringGauge = 52.0, strength = "Medium",
                 brand = Brands[1]
             ),
             Cigar(
                 id = "8", title = "Ashton Cabinet No.7",
-                price = 13.0, length = 6.0, strength = "Medium",
+                price = 13.0, length = 6.0, ringGauge = 52.0, strength = "Medium",
                 brand = Brands[0]
             )
         )

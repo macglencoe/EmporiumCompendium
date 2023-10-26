@@ -106,22 +106,41 @@ fun CigarScaleVisual(
                         .verticalScroll(rememberScrollState())
                         .padding(50.dp)
                 ) {
-                    Box(
-                        Modifier
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
                             .align(Alignment.Center)
-                            .width(dpWidth.dp)
-                            .height(dpHeight.dp)
-                    )
-                    {
-                        val painter = painterResource(id = R.drawable.cigarvisualization)
-                        Image(
-                            painter = painter,
-                            contentDescription = "A Cigar",
-                            contentScale = ContentScale.FillBounds,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .align(Alignment.Center)
+                    ) {
+                        Text(
+                            text = cigar.length.toString() + "in",
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier.padding(10.dp)
                         )
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Text(
+                                text = cigar.ringGauge.toInt().toString() + "/64in",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+
+                            Box(
+                                Modifier
+                                    .width(dpWidth.dp)
+                                    .height(dpHeight.dp)
+                            )
+                            {
+                                val painter = painterResource(id = R.drawable.cigarvisualization)
+                                Image(
+                                    painter = painter,
+                                    contentDescription = "A Cigar",
+                                    contentScale = ContentScale.FillBounds,
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .align(Alignment.Center)
+                                )
+                            }
+                        }
                     }
                 }
             } else {
