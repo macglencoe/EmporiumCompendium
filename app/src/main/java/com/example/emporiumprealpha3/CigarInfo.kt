@@ -1,5 +1,9 @@
 package com.example.emporiumprealpha3
 
+import android.content.res.Configuration
+import android.icu.text.DecimalFormat
+import android.icu.text.NumberFormat
+import android.icu.util.Currency
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,15 +16,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,6 +39,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -37,397 +50,149 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.emporiumprealpha3.data.DemoData
+import com.example.emporiumprealpha3.model.Cigar
 import com.example.emporiumprealpha3.model.ToolBarButtonOption
+import com.example.emporiumprealpha3.ui.theme.AppTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CigarProfile(modifier: Modifier = Modifier,
-                 drawerState: DrawerState,
-                 scope: CoroutineScope,
-                 navController: NavController) {
+fun CigarProfile(
+    cigarId: String? = null,
+    drawerState: DrawerState? = null,
+    drawerScope: CoroutineScope? = null,
+    navController: NavController? = null,
+    modifier: Modifier = Modifier,
+) {
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-            .requiredWidth(width = 360.dp)
-            .requiredHeight(height = 800.dp)
-            .background(color = Color(0xff121212))
+            .fillMaxWidth()
+            .background(
+                brush = Brush.linearGradient(
+                    0.2f to androidx.compose.material3.MaterialTheme.colorScheme.surface,
+                    1f to androidx.compose.material3.MaterialTheme.colorScheme.background,
+                    start = Offset(180f, 0f),
+                    end = Offset(180f, 300f)
+                )
+            )
     ) {
         ToolBar(
             title = "CIGAR",
-            option1 = ToolBarButtonOption.MENU,
-            option1OnClick = {
-                scope.launch {
-                    drawerState.apply {
-                        if (isClosed) open() else close()
+            ToolBarButtonOption.MENU, {
+                drawerScope?.launch { // Launch scope coroutine *if scope is not null*
+                    drawerState?.apply { // Apply *if drawerState is not null*
+                        if (isClosed) open() else close() // Toggle drawer
                     }
                 }
-            },
-            option1State = false,
-            option2 = ToolBarButtonOption.BACK,
-            option2OnClick = { navController.popBackStack() },
-            option2State = false
+            }, false,
+            ToolBarButtonOption.BACK, {
+                navController?.popBackStack() // Go back *if navController is not null*
+            }, false
         )
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    brush = Brush.linearGradient(
-                        0.48f to Color(0xff202221),
-                        1f to Color(0xff1e1e1e),
-                        start = Offset(180f, 0f),
-                        end = Offset(180f, 126f)
-                    )
-                )
-        ) {
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxWidth()
+        if(cigarId != null) {
+            val cigar = DemoData.Cigars.first { it.id == cigarId }
+            Row( // Cigar Title Bar
             ) {
-                Text(
-                    text = "MACANUDO 1968 ROBUSTO",
-                    color = Color.White,
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.body2)
-                Text(
-                    text = "$13.00",
-                    color = Color.White,
-                    textAlign = TextAlign.Center,
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold))
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = cigar.title.uppercase(),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                    val format = DecimalFormat("$#,###.00")
+                    Text(
+                        text = format.format(cigar.price),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
             }
-        }
-        Column(
-            verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(all = 10.dp)
-        ) {
-            Column(
+            Column( // Content
                 verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
-                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(shape = RoundedCornerShape(10.dp))
-                    .background(
-                        brush = Brush.linearGradient(
-                            0f to Color(0xff202221),
-                            1f to Color(0xff202221),
-                            start = Offset(0f, 85f),
-                            end = Offset(340f, 85f)
-                        )
-                    )
-                    .padding(vertical = 10.dp)
-            ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 10.dp)
-                    ) {
-                        Text(
-                            text = "SIZE",
-                            color = Color.White,
-                            textAlign = TextAlign.Center,
-                            style = TextStyle(
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold))
-                    }
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(shape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp))
-                                .background(color = Color(0xff202221))
-                                .padding(
-                                    horizontal = 10.dp,
-                                    vertical = 3.dp
-                                )
-                        ) {
-                            Text(
-                                text = "LENGTH",
-                                color = Color.White,
-                                textAlign = TextAlign.Center,
-                                style = TextStyle(
-                                    fontSize = 16.sp))
-                            Text(
-                                text = "5”",
-                                color = Color.White,
-                                textAlign = TextAlign.End,
-                                style = TextStyle(
-                                    fontSize = 16.sp),
-                                modifier = Modifier
-                                    .fillMaxWidth())
-                        }
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(shape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp))
-                                .background(color = Color(0xff202221))
-                                .padding(
-                                    horizontal = 10.dp,
-                                    vertical = 3.dp
-                                )
-                        ) {
-                            Text(
-                                text = "RING GAUGE:",
-                                color = Color.White,
-                                textAlign = TextAlign.Center,
-                                style = TextStyle(
-                                    fontSize = 16.sp))
-                            Text(
-                                text = "50",
-                                color = Color.White,
-                                textAlign = TextAlign.End,
-                                style = TextStyle(
-                                    fontSize = 16.sp),
-                                modifier = Modifier
-                                    .fillMaxWidth())
-                        }
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .padding(horizontal = 10.dp)
-                        ) {
-                            Text(
-                                text = "SEE SCALE VISUAL",
-                                color = Color.White,
-                                textDecoration = TextDecoration.Underline,
-                                textAlign = TextAlign.End,
-                                style = TextStyle(
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Medium))
-                        }
-                    }
-                }
-            }
-            Column(
-                verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(shape = RoundedCornerShape(10.dp))
-                    .background(
-                        brush = Brush.linearGradient(
-                            0f to Color(0xff202221),
-                            1f to Color(0xff202221),
-                            start = Offset(0f, 173f),
-                            end = Offset(340f, 173f)
-                        )
-                    )
-                    .padding(vertical = 10.dp)
-            ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 10.dp)
-                    ) {
-                        Text(
-                            text = "BLEND",
-                            color = Color.White,
-                            textAlign = TextAlign.Center,
-                            style = TextStyle(
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold))
-                    }
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(shape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp))
-                                .background(color = Color(0xff202221))
-                                .padding(
-                                    horizontal = 10.dp,
-                                    vertical = 3.dp
-                                )
-                        ) {
-                            Text(
-                                text = "WRAPPER:",
-                                color = Color.White,
-                                textAlign = TextAlign.Center,
-                                style = TextStyle(
-                                    fontSize = 16.sp))
-                            Text(
-                                text = "HONDURAN OLANCHO SAN AGUSTIN",
-                                color = Color.White,
-                                textAlign = TextAlign.End,
-                                style = TextStyle(
-                                    fontSize = 16.sp),
-                                modifier = Modifier
-                                    .fillMaxWidth())
-                        }
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(shape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp))
-                                .background(color = Color(0xff202221))
-                                .padding(
-                                    horizontal = 10.dp,
-                                    vertical = 3.dp
-                                )
-                        ) {
-                            Text(
-                                text = "BINDER:",
-                                color = Color.White,
-                                textAlign = TextAlign.Center,
-                                style = TextStyle(
-                                    fontSize = 16.sp))
-                            Text(
-                                text = "CONNECTICUT HABANO",
-                                color = Color.White,
-                                textAlign = TextAlign.End,
-                                style = TextStyle(
-                                    fontSize = 16.sp),
-                                modifier = Modifier
-                                    .fillMaxWidth())
-                        }
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(shape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp))
-                                .background(color = Color(0xff202221))
-                                .padding(
-                                    horizontal = 10.dp,
-                                    vertical = 3.dp
-                                )
-                        ) {
-                            Text(
-                                text = "FILLER:",
-                                color = Color.White,
-                                textAlign = TextAlign.Center,
-                                style = TextStyle(
-                                    fontSize = 16.sp))
-                            Text(
-                                text = "DOMINICAN,\nNICARAGUAN ESTELI,\nNICARAGUAN OMETEPE",
-                                color = Color.White,
-                                textAlign = TextAlign.End,
-                                style = TextStyle(
-                                    fontSize = 16.sp),
-                                modifier = Modifier
-                                    .fillMaxWidth())
-                        }
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(shape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp))
-                                .background(color = Color(0xff202221))
-                                .padding(
-                                    horizontal = 10.dp,
-                                    vertical = 3.dp
-                                )
-                        ) {
-                            Text(
-                                text = "BODY:",
-                                color = Color.White,
-                                textAlign = TextAlign.Center,
-                                style = TextStyle(
-                                    fontSize = 16.sp))
-                            Text(
-                                text = "MEDIUM - FULL",
-                                color = Color.White,
-                                textAlign = TextAlign.End,
-                                style = TextStyle(
-                                    fontSize = 16.sp),
-                                modifier = Modifier
-                                    .fillMaxWidth())
-                        }
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(shape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp))
-                                .background(color = Color(0xff202221))
-                                .padding(
-                                    horizontal = 10.dp,
-                                    vertical = 3.dp
-                                )
-                        ) {
-                            Text(
-                                text = "TASTING NOTES:",
-                                color = Color.White,
-                                textAlign = TextAlign.Center,
-                                style = TextStyle(
-                                    fontSize = 16.sp))
-                            Text(
-                                text = "PEPPER, COCOA, CEDAR, COFFEE",
-                                color = Color.White,
-                                textAlign = TextAlign.End,
-                                style = TextStyle(
-                                    fontSize = 16.sp),
-                                modifier = Modifier
-                                    .fillMaxWidth())
-                        }
-                    }
-                }
-            }
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-                modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
                     .padding(all = 10.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
-                Text(
-                    text = "Crafted in celebration of Macanudo’s iconic legacy, Macanudo 1968 leaves expectations behind by providing a full, flavorful and intricate smoke for fans of complex cigars. But don’t let the new approach fool you, 1968 still delivers the intricately balanced flavor and inherent sweetness present in all of our cigars from the rich soils in which they are grown. The result is a cigar that has received unanimous critical acclaim with 90+ ratings from Cigar Aficionado and Cigar Insider.\n",
-                    color = Color.White,
-                    style = TextStyle(
-                        fontSize = 12.sp),
-                    modifier = Modifier
-                        .requiredWidth(width = 192.dp))
-                Image(
-                    painter = painterResource(id = R.drawable.menu_24px),
-                    contentDescription = "image 1",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .requiredHeight(height = 116.dp))
+                val sizeInfo = cigar.generateSizeInfoMap()
+                if (sizeInfo.isNotEmpty()) {
+                    ProfileInfoCard(
+                        title = "Size",
+                        keyValueInfo = sizeInfo,
+                        deeplinkInfo = mapOf("See Scale Visual" to "CigarScaleVisual/$cigarId"),
+                        navController = navController
+                    )
+                }
+
+                val blendInfo = cigar.generateBlendInfoMap()
+                if (blendInfo.isNotEmpty()) {
+                    ProfileInfoCard(
+                        title = "Blend",
+                        keyValueInfo = blendInfo,
+                    )
+                }
+                if (cigar.description != null) {
+                    Row( // Description
+                        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(all = 10.dp)
+                    ) {
+                        Text(
+                            text = cigar.description,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier
+                                .requiredWidth(width = 192.dp)
+                        )
+                        Image(
+                            painter = painterResource(id = R.drawable.menu_24px),
+                            contentDescription = "image 1",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .requiredHeight(height = 116.dp)
+                        )
+                    }
+                }
             }
+        } else {
+            Text(
+                text = "Cigar Not Found",
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.headlineMedium
+            )
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(widthDp = 360, heightDp = 800)
+@Preview(
+    widthDp = 360, heightDp = 800,
+    uiMode = Configuration.UI_MODE_NIGHT_NO
+)
+@Preview(
+    widthDp = 360, heightDp = 800,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 private fun CigarProfilePreview() {
-    //CigarProfile(Modifier)
+    AppTheme {
+        // A surface container using the 'background' color from the theme
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            CigarProfile("0")
+        }
+    }
 }

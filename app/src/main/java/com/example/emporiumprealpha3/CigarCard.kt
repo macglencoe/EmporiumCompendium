@@ -2,6 +2,7 @@ package com.example.emporiumprealpha3
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,11 +29,15 @@ import androidx.compose.ui.unit.sp
 import com.example.emporiumprealpha3.model.Cigar
 
 @Composable
-fun CigarCard(cigar: Cigar, modifier: Modifier) {
+fun CigarCard(
+    cigar: Cigar,
+    onClick: () -> Unit,
+    modifier: Modifier) {
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
+            .clickable {onClick()}
     ) {
         Column(
             modifier = Modifier
@@ -92,7 +97,7 @@ fun CigarCard(cigar: Cigar, modifier: Modifier) {
                         .background(color = MaterialTheme.colorScheme.onSurface)
                 )
                 Text(
-                    text = cigar.strength,
+                    text = cigar.strength?:"Unknown",
                     color = MaterialTheme.colorScheme.onSurface,
                     style = TextStyle(
                         fontSize = 12.sp

@@ -1,5 +1,6 @@
 package com.example.emporiumprealpha3
 
+import android.content.res.Configuration
 import android.util.DisplayMetrics
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -16,6 +17,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,20 +30,25 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.emporiumprealpha3.model.ToolBarButtonOption
-import com.example.emporiumprealpha3.ui.theme.DemoData
+import com.example.emporiumprealpha3.data.DemoData
+import com.example.emporiumprealpha3.ui.theme.AppTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CigarCatalogue(modifier: Modifier = Modifier, drawerState: DrawerState, scope: CoroutineScope) {
+fun CigarCatalogue(
+    drawerState: DrawerState? = null,
+    drawerScope: CoroutineScope? = null,
+    navController: NavController? = null,
+    modifier: Modifier = Modifier,
+) {
     var showFilterPanel by remember {
         mutableStateOf(false)
-    }
-    var showMenu by remember {
-        mutableStateOf(true)
     }
     var brandSearch by remember {
         mutableStateOf("")
@@ -63,25 +70,25 @@ fun CigarCatalogue(modifier: Modifier = Modifier, drawerState: DrawerState, scop
                 brush = Brush.linearGradient(
                     0.2f to MaterialTheme.colorScheme.surface,
                     1f to MaterialTheme.colorScheme.background,
-                    start = Offset(180f, 0f),
-                    end = Offset(180f, 300f)
+                    start = Offset(
+                        180f, 0f),
+                    end = Offset(
+                        180f, 300f)
                 )
             )
     ) {
         ToolBar(
             "CIGARS",
             ToolBarButtonOption.MENU, {
-                                      scope.launch {
-                                          drawerState.apply {
-                                              if (isClosed) open() else close()
-                                          }
-                                      }
-            }, showMenu,
-            ToolBarButtonOption.FILTER, {showFilterPanel = !showFilterPanel}, showFilterPanel,
-            Modifier
-                .fillMaxWidth()
-                .requiredHeight(height = 60.dp)
-
+                drawerScope?.launch { // Launch scope coroutine *if scope is not null*
+                    drawerState?.apply { // Apply *if drawerState is not null*
+                        if (isClosed) open() else close() // Toggle drawer
+                    }
+                }
+            }, false,
+            ToolBarButtonOption.FILTER, {
+                showFilterPanel = !showFilterPanel
+            }, showFilterPanel
         )
 
         AnimatedVisibility(showFilterPanel) {
@@ -114,7 +121,8 @@ fun CigarCatalogue(modifier: Modifier = Modifier, drawerState: DrawerState, scop
                     val density = LocalDensity.current
                     CigarCard(
                         cigar,
-                        Modifier
+                        {navController?.navigate("CigarProfile/"+cigar.id)},
+                        modifier = Modifier
                             .fillMaxWidth()
                             .requiredHeight(height = 79.dp)
                             .clip(shape = RoundedCornerShape(15.dp))
@@ -137,6 +145,28 @@ fun CigarCatalogue(modifier: Modifier = Modifier, drawerState: DrawerState, scop
                             )
                     )
                 }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(
+    widthDp = 360, heightDp = 800,
+    uiMode = Configuration.UI_MODE_NIGHT_NO
+)
+@Preview(
+    widthDp = 360, heightDp = 800,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun CigarCataloguePreview() {
+    AppTheme {
+        // A surface container using the 'background' color from the theme
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            CigarCatalogue()
         }
     }
 }
