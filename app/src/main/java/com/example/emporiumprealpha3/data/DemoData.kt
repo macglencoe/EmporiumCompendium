@@ -6,14 +6,14 @@ import com.example.emporiumprealpha3.model.Cigar
 data class DemoData(val test: Int) {
     companion object {
         val Brands: List<Brand> = listOf(
-            Brand("Ashton"),
-            Brand("Oliva"),
-            Brand("Arturo Fuente"),
-            Brand("Macanudo"),
-            Brand("Romeo y Julieta"),
-            Brand("ACID"),
-            Brand("Baccarat"),
-            Brand("CAO")
+            Brand(1, "Ashton"),
+            Brand(2, "Oliva"),
+            Brand(3, "Arturo Fuente"),
+            Brand(4, "Macanudo"),
+            Brand(5, "Romeo y Julieta"),
+            Brand(6, "ACID"),
+            Brand(7, "Baccarat"),
+            Brand(8, "CAO")
         )
         val Cigars: List<Cigar> = listOf(
             Cigar(
