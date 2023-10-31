@@ -6,14 +6,14 @@ import com.example.emporiumprealpha3.model.Cigar
 data class DemoData(val test: Int) {
     companion object {
         val Brands: List<Brand> = listOf(
-            Brand(1, "Ashton"),
-            Brand(2, "Oliva"),
-            Brand(3, "Arturo Fuente"),
-            Brand(4, "Macanudo"),
-            Brand(5, "Romeo y Julieta"),
-            Brand(6, "ACID"),
-            Brand(7, "Baccarat"),
-            Brand(8, "CAO")
+            Brand("1", "Ashton"),
+            Brand("2", "Oliva"),
+            Brand("3", "Arturo Fuente"),
+            Brand("4", "Macanudo"),
+            Brand("5", "Romeo y Julieta"),
+            Brand("6", "ACID"),
+            Brand("7", "Baccarat"),
+            Brand("8", "CAO")
         )
         val Cigars: List<Cigar> = listOf(
             Cigar(
@@ -21,7 +21,7 @@ data class DemoData(val test: Int) {
                 title = "Macanudo 1968 Robusto",
                 price = 13.0, length = 5.0, ringGauge = 50.0,
                 strength = "Full",
-                brand = Brands[3], wrapper = "Honduran Olancho San Agustin",
+                brandId = "4", wrapper = "Honduran Olancho San Agustin",
                 binder = "Connecticut Habano",
                 filler = listOf("Dominican", "Nicaraguan Estelli", "Nicaraguan Ometepe"),
                 tastingNotes = listOf("Pepper", "Cocoa", "Cedar", "Coffee"),
@@ -32,37 +32,37 @@ data class DemoData(val test: Int) {
             Cigar(
                 id = "2", title = "Arturo Fuente Cuban Corona",
                 price = 17.0, length = 5.25, ringGauge = 45.0, strength = "Medium",
-                brand = Brands[2]
+                brandId = "3"
             ),
             Cigar(
                 id = "3", title = "Romeo y Julieta Reserva Real Twisted Toro",
                 price = 8.0, length = 6.0, ringGauge = 54.0, strength = "Medium",
-                brand = Brands[4]
+                brandId = "5"
             ),
             Cigar(
                 id = "4", title = "ACID Blue Kuba Kuba",
                 price = 10.0, length = 5.0, ringGauge = 54.0, strength = "Medium",
-                brand = Brands[5]
+                brandId = "6"
             ),
             Cigar(
                 id = "5", title = "Baccarat Nicaragua Churchill",
                 price = 6.0, length = 7.0, ringGauge = 50.0, strength = "Medium",
-                brand = Brands[6]
+                brandId = "7"
             ),
             Cigar(
                 id = "6", title = "CAO Brazilia Amazon",
                 price = 6.0, length = 6.0, ringGauge = 60.0, strength = "Full",
-                brand = Brands[7]
+                brandId = "8"
             ),
             Cigar(
                 id = "7", title = "Oliva Serie G Presidente",
                 price = 7.0, length = 8.0, ringGauge = 52.0, strength = "Medium",
-                brand = Brands[1]
+                brandId = "2"
             ),
             Cigar(
                 id = "8", title = "Ashton Cabinet No.7",
                 price = 13.0, length = 6.0, ringGauge = 52.0, strength = "Medium",
-                brand = Brands[0]
+                brandId = "1"
             )
         )
     }

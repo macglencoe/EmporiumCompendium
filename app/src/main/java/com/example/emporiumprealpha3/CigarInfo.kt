@@ -15,10 +15,13 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -56,6 +59,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -68,6 +72,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.example.emporiumprealpha3.data.DemoData
 import com.example.emporiumprealpha3.model.Cigar
 import com.example.emporiumprealpha3.model.ToolBarButtonOption
@@ -158,7 +164,9 @@ fun CigarProfile(
                 }, false
             )
             if (cigarId != null) {
-                val cigar = DemoData.Cigars.first { it.id == cigarId }
+
+                val cigar = getCigarList(LocalContext.current).first { it.id == cigarId }
+
                 Row( // Cigar Title Bar
                 ) {
                     Column(
@@ -179,6 +187,7 @@ fun CigarProfile(
                         )
                     }
                 }
+
                 Column( // Content
                     verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
                     modifier = Modifier
@@ -203,29 +212,51 @@ fun CigarProfile(
                             keyValueInfo = blendInfo,
                         )
                     }
-                    if (cigar.description != null) {
+
                         Row( // Description
-                            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
                             modifier = Modifier
-                                .fillMaxWidth()
+                                .fillMaxSize()
                                 .padding(all = 10.dp)
                         ) {
-                            Text(
-                                text = cigar.description,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                style = MaterialTheme.typography.bodyMedium,
-                                modifier = Modifier
-                                    .requiredWidth(width = 192.dp)
-                            )
-                            Image(
-                                painter = painterResource(id = R.drawable.menu_24px),
-                                contentDescription = "image 1",
-                                modifier = Modifier
+                            if (cigar.description != null) {
+                                Box(
+                                    Modifier
                                     .fillMaxWidth()
-                                    .requiredHeight(height = 116.dp)
-                            )
+                                    .weight(1f)
+                                ) {
+                                    Text(
+                                        text = cigar.description,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        modifier = Modifier
+                                            .align(Alignment.TopStart)
+                                    )
+                                }
+                            }
+                            Box(
+                                Modifier
+                                    .fillMaxSize()
+                                    .weight(1f)
+                            ) {
+                                Image(
+                                    painter = rememberAsyncImagePainter(
+                                        model = cigar.img_src
+                                    ),
+                                    contentDescription = "",
+                                    contentScale = ContentScale.FillBounds,
+                                    modifier = Modifier
+                                        .defaultMinSize(116.dp, 116.dp)
+                                        .fillMaxSize()
+                                        .aspectRatio(1f, true)
+                                        .align(Alignment.Center)
+                                        .clip(shape = RoundedCornerShape(6.dp))
+                                        .clickable {
+                                            navController?.navigate("CigarImagePage/${cigar.id}")
+                                        }
+                                )
+                            }
                         }
-                    }
                 }
             } else {
                 Text(
@@ -234,6 +265,7 @@ fun CigarProfile(
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.headlineMedium
                 )
+
             }
         }
     }

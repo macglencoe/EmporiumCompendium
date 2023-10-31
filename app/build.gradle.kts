@@ -72,4 +72,6 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation("com.squareup.moshi:moshi-kotlin:1.13.0")
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+    implementation("com.google.code.gson:gson:2.8.2")
+    implementation("io.coil-kt:coil-compose:2.0.0-rc01")
 }

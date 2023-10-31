@@ -1,0 +1,39 @@
+
+[
+    {
+      "id":"1",
+      "brandId":"4",
+      "title":"Macanudo 1968 Robusto",
+      "price":13.0,
+      "length":5.0,
+      "ringGauge":50.0,
+      "strength": "Full",
+      "wrapper": "Honduran Olancho San Agustin",
+      "binder":"Connecticut Habano",
+      "img_src":"https://mikescigars.com/media/catalog/product/cache/0fe343e181b5504db207ac8c729e73b7/m/a/ma68ro-x20.jpg",
+
+      "filler": [
+        "Dominican",
+        "Nicaraguan Estelli",
+        "Nicaraguan Ometepe"
+      ],
+      "tastingNotes": [
+        "Pepper",
+        "Cocoa",
+        "Cedar",
+        "Coffee"
+      ],
+      "description":"Crafted in celebration of Macanudo’s iconic legacy, Macanudo 1968 leaves expectations behind by providing a full, flavorful and intricate smoke for fans of complex cigars. But don’t let the new approach fool you, 1968 still delivers the intricately balanced flavor and inherent sweetness present in all of our cigars from the rich soils in which they are grown. The result is a cigar that has received unanimous critical acclaim with 90+ ratings from Cigar Aficionado and Cigar Insider."
+
+    },
+  {
+    "id": "2",
+    "title": "Arturo Fuente Cuban Corona",
+    "price": 17.0,
+    "length": 5.25,
+    "ringGauge": 45.0,
+    "strength": "Medium",
+    "brandId": "3",
+    "img_src": "https://www.jrcigars.com/dw/image/v2/BCZK_PRD/on/demandware.static/-/Sites-masterCatalog/default/dwd06da3e9/images/Images%20for%20JR%20Master%20List/JR%20Master%20List%202/AFCC_single_1.jpg?sw=220&sh=220&sm=fit&q=80"
+  }
+]

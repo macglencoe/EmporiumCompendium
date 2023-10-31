@@ -153,6 +153,17 @@ private fun NavigationPage(modifier: Modifier = Modifier) {
                     navController = navController
                 )
             }
+            composable(
+                "CigarImagePage/{cigarId}",
+                arguments = listOf(navArgument("cigarId") {type = NavType.StringType})
+            ) {backstackEntry ->
+                CigarImagePage(
+                    backstackEntry.arguments?.getString("cigarId"),
+                    drawerScope = scope,
+                    drawerState = drawerState,
+                    navController = navController
+                )
+            }
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.example.emporiumprealpha3
 
+import android.app.PendingIntent.getActivity
+import android.content.Context
 import android.content.res.Configuration
 import android.util.DisplayMetrics
 import androidx.compose.animation.AnimatedVisibility
@@ -40,17 +42,20 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.emporiumprealpha3.data.DataSource
 import com.example.emporiumprealpha3.model.ToolBarButtonOption
 import com.example.emporiumprealpha3.data.DemoData
 import com.example.emporiumprealpha3.ui.theme.AppTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.io.InputStream
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,6 +75,8 @@ fun CigarCatalogue(
         mutableStateOf("")
     }
 
+    val context: Context = LocalContext.current
+    val cigarList = getCigarList(context)
 
     val screenWidth = DisplayMetrics().widthPixels.toFloat()
 
@@ -158,8 +165,9 @@ fun CigarCatalogue(
             )
             {
                 // Filter Cigars and Display
-                DemoData.Cigars.filter {
-                    it.title.contains(titleSearch, true) && it.brand.title.contains(
+                // DemoData.Cigars.filter {
+                cigarList.filter {
+                    it.title.contains(titleSearch, true) && it.getBrand().title.contains(
                         brandSearch,
                         true
                     )

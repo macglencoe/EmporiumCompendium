@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.shape.CircleShape
@@ -26,6 +27,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.example.emporiumprealpha3.model.Cigar
 
 @Composable
@@ -114,7 +116,7 @@ fun CigarCard(
                 .clip(shape = RoundedCornerShape(6.dp))
         ) {
             Image(
-                painter = painterResource(id = R.drawable.macanudorobusto1),
+                painter = rememberAsyncImagePainter(cigar.img_src),
                 contentDescription = "",
                 modifier = Modifier
                     .fillMaxSize()

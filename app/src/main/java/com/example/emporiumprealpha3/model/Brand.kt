@@ -1,6 +1,6 @@
 package com.example.emporiumprealpha3.model
 
 data class Brand(
-    val id: Int,
+    val id: String,
     val title: String
 )

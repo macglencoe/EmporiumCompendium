@@ -1,9 +1,14 @@
 package com.example.emporiumprealpha3.model
 
+import androidx.compose.ui.graphics.painter.Painter
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import com.example.emporiumprealpha3.data.DemoData
+
 data class Cigar(
     val id:String,
     val title:String,
-    val brand: Brand,
+    val brandId: String,
     val price:Double? = null,
     val length:Double? = null,
     val ringGauge:Double? = null,
@@ -12,8 +17,13 @@ data class Cigar(
     val binder: String? = null,
     val filler: List<String>? = null,
     val tastingNotes: List<String>? = null,
-    val description: String? = null
+    val description: String? = null,
+    val img_src: String? = null
 ) {
+
+    fun getBrand() : Brand {
+        return DemoData.Brands.first { it.id == brandId}
+    }
     fun generateSizeInfoMap() : Map<String, String> {
         return mapOf<String, String?>(
             "Length" to this.length?.toString(),
